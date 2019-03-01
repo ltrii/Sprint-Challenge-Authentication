@@ -1,4 +1,9 @@
 const axios = require('axios');
+const bcrypt = require('bcryptjs');
+const Users = require('../models/userModel');
+const jwt = require('jsonwebtoken');
+
+
 
 const { authenticate } = require('../auth/authenticate');
 
@@ -9,11 +14,51 @@ module.exports = server => {
 };
 
 function register(req, res) {
-  // implement user registration
+  let user = req.body;
+  const hash = bcrypt.hashSync(user.password, 10)
+  user.password = hash;
+
+  Users.add(user)
+    .then(saved => {
+      res.status(201).json(saved);
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
+}
+
+function generateToken(user) {
+	const payload = {
+		userId: user.id,
+		username: user.username
+	};
+	const secret = jwtKey;
+	const options = {
+		expiresIn: '1h'
+	};
+	return jwt.sign(payload, secret, options);
 }
 
 function login(req, res) {
-  // implement user login
+  let { username, password } = req.body;
+  
+  Users.findBy({ username })
+    .first()
+    .then(user => {
+      if (user && bcrypt.compareSync(password, user.password)) {
+        const token = generateToken(user); 
+        res.status(200).json({
+          message: `Welcome ${user.username}!, have a token...`,
+          token,
+          secret
+        });
+      } else {
+        res.status(401).json({ message: 'Invalid Credentials' });
+      }
+    })
+    .catch(error => {
+      res.status(500).json(error);
+    });
 }
 
 function getJokes(req, res) {
@@ -22,7 +67,7 @@ function getJokes(req, res) {
   };
 
   axios
-    .get('https://icanhazdadjoke.com/search', requestOptions)
+    .get('https://icanhazdadjoke.com/search', authenticate, requestOptions)
     .then(response => {
       res.status(200).json(response.data.results);
     })
