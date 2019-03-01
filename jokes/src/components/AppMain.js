@@ -42,7 +42,7 @@ class AppMain extends Component {
       return (
         <div>
         <LogoutButton refreshPage={this.refreshPage} logOutAction={this.props.logOutAction} />
-        <UserDisplay refreshPage={this.refreshPage} users={this.props.users} getJokes={this.props.getJokes} />
+        <UserDisplay refreshPage={this.refreshPage} jokes={this.props.jokes} getJokes={this.props.getJokes} />
         </div>
       )
     }
@@ -64,7 +64,7 @@ const mapStateToProps = state => {
     registerUser: state.userReducer.registerUser,
     loginUser: state.userReducer.loginUser,
     getJokes: state.userReducer.getJokes,
-    users: state.userReducer.users,
+    jokes: state.userReducer.jokes,
     loggedin: state.userReducer.loggedin
   };
 };

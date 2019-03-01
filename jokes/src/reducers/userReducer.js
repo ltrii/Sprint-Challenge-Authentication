@@ -9,6 +9,7 @@ import { REGISTER_USER,
 
 
 const initialState = {
+    jokes: [],
     error: null
 }
 
