@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const Users = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
+const secret =
+  process.env.JWT_SECRET || 'add a third table for many to many relationships';
 
 
 const { authenticate } = require('../auth/authenticate');
@@ -29,10 +31,8 @@ function register(req, res) {
 
 function generateToken(user) {
 	const payload = {
-		userId: user.id,
 		username: user.username
 	};
-	const secret = jwtKey;
 	const options = {
 		expiresIn: '1h'
 	};
