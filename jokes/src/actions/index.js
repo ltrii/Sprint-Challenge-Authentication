@@ -30,15 +30,15 @@ export const loginUser = (user) => dispatch => {
         .catch(err => console.log('login error'))
 }
 
-export const getJokes = (jwt) => dispatch => {
+export const getJokes = (pagejwt) => dispatch => {
     dispatch({ type: GET_JOKES });
     Axios
         .get(
             'http://localhost:3300/api/jokes/', {
                 headers: {
-                    authorization: jwt
+                    authorization: pagejwt.jwt
                 }
-            }
+            }          
         )
         .then(res => dispatch({ type: JOKE_PULL, payload: res.data }))
         .catch(err => console.log('get jokes error'))
